@@ -76,7 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 subtitle: null,
                 enabled: true,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Settings()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const Settings()));
                 },
               ),
               ListTile(
@@ -85,7 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 subtitle: null,
                 enabled: true,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Favor()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const Favor()));
                 },
               ),
               ListTile(
@@ -94,7 +96,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 subtitle: null,
                 enabled: true,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const About()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const About()));
                 },
               ),
             ],
@@ -160,7 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
               margin: const EdgeInsets.only(top: 42, left: 340),
               child: MaterialButton(
                 color: Colors.blueAccent,
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchPage())),
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SearchPage())),
                 child: const Icon(
                   Icons.add_circle_outline,
                   color: Colors.white,
@@ -201,7 +205,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             ]),
                       ),
                       OutlinedButton(
-                        onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WeekPage())),
+                        onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const WeekPage())),
                         child: const Text('Прогноз на неделю'),
                       ),
                     ],
