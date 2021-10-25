@@ -9,8 +9,7 @@ class Settings extends StatelessWidget {
       body: Row(
         children: [
           IconButton(
-            onPressed: () =>  Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const MyHomePage(title: "Погода"))),
+            onPressed: () =>  Navigator.pushNamed(context, "/"),
             icon: const Icon(
               Icons.arrow_back_ios,
               size: 20,

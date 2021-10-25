@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:provider/provider.dart';
 import 'cont.dart';
 import 'settings.dart';
 import 'search.dart';
@@ -20,40 +22,79 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    const lightPrimary = Color(0xffe2ebff);
+    const darkPrimary = Color(0xff0c1620);
+
+    return NeumorphicApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.green,
+      theme: const NeumorphicThemeData(
+        baseColor: lightPrimary,
+        variantColor: Color(0xffe1e9ff),
+        accentColor: Color(0xff4b5f88),
+        appBarTheme: NeumorphicAppBarThemeData(
+          color: lightPrimary,
+        ),
+        textTheme: TextTheme(
+          subtitle1: TextStyle(color: Color(0xff656565)),
+          subtitle2: TextStyle(color: Colors.white),
+        ),
       ),
-      home: const MyHomePage(title: ''),
+      darkTheme: const NeumorphicThemeData(
+        baseColor: darkPrimary,
+        variantColor: Color(0xff0d172b),
+        accentColor: Color(0xff0a1121),
+        shadowLightColor: Color(0xFF828282),
+        defaultTextColor: Colors.white,
+        textTheme: TextTheme(
+          subtitle1: TextStyle(color: Color(0xffe5e5e5)),
+          subtitle2: TextStyle(color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+      ),
+      materialTheme: ThemeData(
+        scaffoldBackgroundColor: lightPrimary,
+        backgroundColor: lightPrimary,
+        cardColor: lightPrimary,
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.black,
+          backgroundColor: lightPrimary,
+        ),
+      ),
+      materialDarkTheme: ThemeData(
+        scaffoldBackgroundColor: darkPrimary,
+        primaryColor: Colors.white,
+        backgroundColor: darkPrimary,
+        cardColor: darkPrimary,
+        brightness: Brightness.dark,
+        cardTheme: const CardTheme(
+          shadowColor: Colors.white,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(Colors.white),
+          ),
+        ),
+      ),
+      title: 'whether',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(),
+        //         '/week': (context) => const WeeklyForecastPage(),
+        // '/cities': (context) => const CitySearchPage(),
+        // '/favorites': (context) => const FavoritesPage(),
+        // '/settings': (context) => const SettingsPage(),
+        // '/about': (context) => const AboutPage(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 2014;
-  int _degree = 30;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-      _degree += _degree;
-    });
-  }
-
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
         backgroundColor: Colors.lightBlue,
         drawer: Drawer(
           child: Column(
@@ -96,8 +137,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 subtitle: null,
                 enabled: true,
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const About()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const AboutPage()));
                 },
               ),
             ],
@@ -148,30 +189,18 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 42, left: 20),
-              child: MaterialButton(
-                color: Colors.blueAccent,
-                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-                child: const Icon(
-                  Icons.dehaze,
-                  color: Colors.white,
-                ),
-                shape: const CircleBorder(),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 42, left: 340),
-              child: MaterialButton(
-                color: Colors.blueAccent,
-                onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SearchPage())),
-                child: const Icon(
-                  Icons.add_circle_outline,
-                  color: Colors.white,
-                ),
-                shape: const CircleBorder(),
-              ),
-            ),
+                margin: const EdgeInsets.all(10),
+                child: Column(children: [
+                  Builder(
+                      builder: (context) => MainButton(
+                            child: const Icon(Icons.menu, color: Colors.white),
+                            onPressed: () => Scaffold.of(context).openDrawer(),
+                          )),
+                  MainButton(
+                    child: const Icon(Icons.add, color: Colors.white),
+                    onPressed: () => Navigator.pushNamed(context, '/'),
+                  ),
+                ])),
             SlidingUpPanel(
               minHeight: 230,
               maxHeight: 350,
@@ -217,5 +246,27 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ));
+  }
+}
+
+class MainButton extends StatelessWidget {
+  final Widget child;
+  final NeumorphicButtonClickListener onPressed;
+
+  // ignore: use_key_in_widget_constructors
+  const MainButton({required this.child, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return NeumorphicButton(
+      style: const NeumorphicStyle(
+        color: Colors.transparent,
+        shadowLightColor: Colors.black87,
+        lightSource: LightSource(0, 0),
+        boxShape: NeumorphicBoxShape.circle(),
+      ),
+      child: child,
+      onPressed: onPressed,
+    );
   }
 }

@@ -14,26 +14,26 @@ class WeekPage extends StatelessWidget {
             Row(
               children: [
                 IconButton(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyHomePage(title: "Погода"))),
+                  onPressed: () => Navigator.pushNamed(context, "/"),
                   icon: const Icon(
                     Icons.arrow_back_ios,
                   ),
                 ),
                 const SizedBox(
                     child: Text(
-                      'Прогноз на неделю',
-                      style: TextStyle(
-                          fontSize: 26.0,
-                          fontFamily: 'Roboto',
-                          color: Colors.black),
-                    ))
+                  'Прогноз на неделю',
+                  style: TextStyle(
+                      fontSize: 26.0,
+                      fontFamily: 'Roboto',
+                      color: Colors.black),
+                ))
               ],
             ),
             Container(
               margin: const EdgeInsets.only(
                   top: 20, left: 20, bottom: 20, right: 10),
               child: OutlinedButton(
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyHomePage(title: "Погода"))),
+                onPressed: () => Navigator.pushNamed(context, "/"),
                 child: const Text('Вернуться на главную'),
               ),
             ),

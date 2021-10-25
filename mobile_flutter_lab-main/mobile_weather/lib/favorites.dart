@@ -7,18 +7,14 @@ class Favor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Row(
-          children: [
-            IconButton(
-              onPressed: () =>  Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const MyHomePage(title: "Погода"))),
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-              ),
-            ),
-          ]
-        )
-    );
+        body: Row(children: [
+      IconButton(
+        onPressed: () => Navigator.pushNamed(context, "/"),
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          size: 20,
+        ),
+      ),
+    ]));
   }
 }

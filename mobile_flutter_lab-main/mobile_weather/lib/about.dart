@@ -1,26 +1,63 @@
-import 'package:flutter/material.dart';
-import 'main.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-class About extends StatelessWidget {
-  const About({Key? key}) : super(key: key);
+class AboutPage extends StatelessWidget {
+  const AboutPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Row(children: [
-      IconButton(
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const MyHomePage(title: "Погода"))),
-        icon: const Icon(
-          Icons.arrow_back_ios,
-          size: 20,
-        ),
+      appBar: NeumorphicAppBar(
+        title: const Text('О приложении'),
       ),
-      const Text("О разработчике",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-          )),
-    ]));
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 30),
+          Center(
+            child: Neumorphic(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              style: NeumorphicStyle(
+                depth: -3,
+                color: NeumorphicTheme.variantColor(context),
+              ),
+              child: const Text(
+                'Team Spirit',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 28,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 180),
+          Expanded(
+            child: Neumorphic(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: const [
+                      Text(
+                        'by Noskov Alexey',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Text('Версия 1.0'),
+                      Text('от 24 октября 2021'),
+                    ],
+                  ),
+                  const Text(
+                    '2021',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
