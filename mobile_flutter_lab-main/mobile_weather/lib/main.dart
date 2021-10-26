@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:provider/provider.dart';
 import 'cont.dart';
 import 'settings.dart';
-import 'search.dart';
 import 'forecast.dart';
 import 'favorites.dart';
 import 'about.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.bottom]); //убрать верхню настройку
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
   runApp(const MyApp());
 }
 
@@ -78,20 +75,22 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'whether',
-      initialRoute: '/',
       routes: {
-        '/': (context) => MyHomePage(),
-        //         '/week': (context) => const WeeklyForecastPage(),
-        // '/cities': (context) => const CitySearchPage(),
-        // '/favorites': (context) => const FavoritesPage(),
+        '/': (context) => const MyHomePage(),
+        '/settings': (context) => SettingsPage(),
+        '/about': (context) => const AboutPage(),
+        '/favorite': (context) => const FavorPage(),
         // '/settings': (context) => const SettingsPage(),
         // '/about': (context) => const AboutPage(),
       },
+      initialRoute: '/',
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,8 +116,7 @@ class MyHomePage extends StatelessWidget {
                 subtitle: null,
                 enabled: true,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const Settings()));
+                  Navigator.pushNamed(context, "/settings");
                 },
               ),
               ListTile(
@@ -127,8 +125,7 @@ class MyHomePage extends StatelessWidget {
                 subtitle: null,
                 enabled: true,
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Favor()));
+                  Navigator.pushNamed(context, "/favorite");
                 },
               ),
               ListTile(
@@ -137,8 +134,7 @@ class MyHomePage extends StatelessWidget {
                 subtitle: null,
                 enabled: true,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AboutPage()));
+                  Navigator.pushNamed(context, "/about");
                 },
               ),
             ],

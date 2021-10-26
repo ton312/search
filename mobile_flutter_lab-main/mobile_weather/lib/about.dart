@@ -3,17 +3,23 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: NeumorphicAppBar(
-        title: const Text('О приложении'),
+          leading: IconButton(
+            onPressed: () => Navigator.pushNamed(context, "/"),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              size: 20,
+            ),
+          ),
+          title: const Text('О приложении')
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 30),
+          SizedBox(height: (MediaQuery.of(context).size.width/100)*2),
           Center(
             child: Neumorphic(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -25,7 +31,7 @@ class AboutPage extends StatelessWidget {
                 'Team Spirit',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 28,
+                  fontSize: 30,
                 ),
               ),
             ),
@@ -61,3 +67,4 @@ class AboutPage extends StatelessWidget {
     );
   }
 }
+//flexible flutter
