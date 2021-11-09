@@ -1,26 +1,27 @@
 
+import 'dart:convert';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:provider/provider.dart';
 import 'dart:developer' as dev;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
-
-class CitySearchPage extends StatefulWidget {
-  const CitySearchPage({Key? key}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
-  State<CitySearchPage> createState() => _CitySearchPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _CitySearchPageState extends State<CitySearchPage> {
-  final _searchFocus = FocusNode();
+class _SearchPageState extends State<SearchPage> {
+  final _focus = FocusNode();
   final _searchController = TextEditingController();
 
-  Future<List<cities.SearchResult>> cityList = Future.value([]);
+  Future<List<SearchResult>> cityList = Future.value([]);
 
   @override
   void initState() {
     super.initState();
-    _searchFocus.requestFocus();
+    _focus.requestFocus();
   }
 
   @override
@@ -35,7 +36,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
     }
 
     setState(() {
-      cityList = cities.searchCities(_searchController.text, 20);
+      cityList = searchCities(_searchController.text, 20);
     });
   }
 
@@ -44,7 +45,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
     return Scaffold(
       appBar: NeumorphicAppBar(
         title: TextField(
-          focusNode: _searchFocus,
+          focusNode: _focus,
           controller: _searchController,
           onEditingComplete: _fetchCities,
           style: const TextStyle(fontSize: 20),
@@ -59,7 +60,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<cities.SearchResult>>(
+      body: FutureBuilder<List<SearchResult>>(
         future: cityList,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -74,18 +75,18 @@ class _CitySearchPageState extends State<CitySearchPage> {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               var item = snapshot.data![index];
-              var isFavorite = context.read<WeatherModel>().favoriteCities.contains(item.city);
+              //var isFavorite = context.read<WeatherModel>().favoriteCities.contains(item.city);
 
               return GestureDetector(
                 child: ListTile(
                   title: Text('${item.city} - ${item.country}'),
-                  trailing: Icon(isFavorite ? Icons.star : Icons.star_border),
+                  //trailing: Icon(isFavorite ? Icons.star : Icons.star_border),
                 ),
                 onTap: () {
-                  var weather = context.read<WeatherModel>();
-                  weather.currentCity = item.city;
-                  weather.addFavoriteCity(item.city);
-                  Navigator.pop(context);
+                  // var weather = context.read<WeatherModel>();
+                  // weather.currentCity = item.city;
+                  // weather.addFavoriteCity(item.city);
+                  // Navigator.pop(context);
                 },
               );
             },
@@ -94,4 +95,48 @@ class _CitySearchPageState extends State<CitySearchPage> {
       ),
     );
   }
+}
+
+
+
+
+
+
+
+
+class SearchResult {
+  String city;
+  String country;
+
+  SearchResult(this.city, this.country);
+
+  @override
+  bool operator==(o) => o is SearchResult && city == o.city && country == o.country;
+
+  @override
+  int get hashCode => city.hashCode ^ country.hashCode;
+
+}
+
+Future<List<SearchResult>> searchCities(String query, int maxRows) async {
+  var url = Uri.http('api.geonames.org', '/searchJSON', {
+    'q': query,
+    'maxRows': maxRows.toString(),
+    'lang': 'ru',
+    'fuzzy': '1',
+    'username': dotenv.env['GEONAMES_KEY'],
+  });
+
+  http.Response resp = await http.get(url);
+  var json = jsonDecode(resp.body);
+
+  if (resp.statusCode != 200) {
+    throw Exception(json['status']['message']);
+  }
+
+  return (json['geonames'] as List)
+      .where((geoname) => geoname['countryName'] != null)
+      .map((geoname) => SearchResult(geoname['name'], geoname['countryName']))
+      .toSet()
+      .toList();
 }

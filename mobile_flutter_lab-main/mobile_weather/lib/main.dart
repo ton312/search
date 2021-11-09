@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:provider/provider.dart';
 import 'cont.dart';
-import 'settings.dart';
+import 'page_settings.dart';
 import 'forecast.dart';
 import 'favorites.dart';
 import 'about.dart';
+import 'search.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,11 +79,10 @@ class MyApp extends StatelessWidget {
       title: 'whether',
       routes: {
         '/': (context) => const MyHomePage(),
-        '/settings': (context) => SettingsPage(),
+        '/settings': (context) => const SettingsPage(),
         '/about': (context) => const AboutPage(),
         '/favorite': (context) => const FavorPage(),
-        // '/settings': (context) => const SettingsPage(),
-        // '/about': (context) => const AboutPage(),
+        '/search': (context) => const SearchPage(),
       },
       initialRoute: '/',
     );
@@ -194,7 +195,7 @@ class MyHomePage extends StatelessWidget {
                           )),
                   MainButton(
                     child: const Icon(Icons.add, color: Colors.white),
-                    onPressed: () => Navigator.pushNamed(context, '/'),
+                    onPressed: () => Navigator.pushNamed(context, "/search"),
                   ),
                 ])),
             SlidingUpPanel(
