@@ -1,6 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
-import 'data/settings.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -34,16 +33,8 @@ class SettingsPage extends StatelessWidget {
                     title: 'Температура',
                     a: '°C',
                     b: '°F',
-                    selectedIndex:
-                        settings.units.temp == TempUnit.celsius ? 0 : 1,
-                    onChanged: (index) {
-                      var units = context.read<SettingsModel>().units;
-                      context.read<SettingsModel>().units = UnitSettings(
-                        index == 0 ? TempUnit.celsius : TempUnit.fahrenheit,
-                        units.speed,
-                        units.pressure,
-                      );
-                    },
+                    selectedIndex: 1,
+                    onChanged: (index) {},
                   ),
                   const Divider(),
                   _Toggle(
@@ -51,14 +42,8 @@ class SettingsPage extends StatelessWidget {
                     a: 'м/c',
                     b: 'км/ч',
                     selectedIndex:
-                        settings.units.speed == SpeedUnit.meterSecond ? 0 : 1,
+                    1,
                     onChanged: (index) {
-                      var units = context.read<SettingsModel>().units;
-                      context.read<SettingsModel>().units = UnitSettings(
-                        units.temp,
-                        index == 0 ? SpeedUnit.meterSecond : SpeedUnit.kmHour,
-                        units.pressure,
-                      );
                     },
                   ),
                   const Divider(),
@@ -67,14 +52,9 @@ class SettingsPage extends StatelessWidget {
                     a: 'мм.рт.ст.',
                     b: 'гПа',
                     selectedIndex:
-                        settings.units.pressure == PressureUnit.mmHg ? 0 : 1,
+                    1,
                     onChanged: (index) {
-                      var units = context.read<SettingsModel>().units;
-                      context.read<SettingsModel>().units = UnitSettings(
-                        units.temp,
-                        units.speed,
-                        index == 0 ? PressureUnit.mmHg : PressureUnit.hPa,
-                      );
+
                     },
                   ),
                 ],

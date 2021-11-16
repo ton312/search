@@ -16,7 +16,7 @@ class _SearchPageState extends State<SearchPage> {
   final _focus = FocusNode();
   final _searchController = TextEditingController();
 
-  Future<List<SearchResult>> cityList = Future.value([]);
+  Future<List<Result>> cityList = Future.value([]);
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<SearchResult>>(
+      body: FutureBuilder<List<Result>>(
         future: cityList,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -98,27 +98,21 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 
-
-
-
-
-
-
-class SearchResult {
+class Result {
   String city;
   String country;
 
-  SearchResult(this.city, this.country);
+  Result(this.city, this.country);
 
   @override
-  bool operator==(o) => o is SearchResult && city == o.city && country == o.country;
+  bool operator==(o) => o is Result && city == o.city && country == o.country;
 
   @override
   int get hashCode => city.hashCode ^ country.hashCode;
 
 }
 
-Future<List<SearchResult>> searchCities(String query, int maxRows) async {
+Future<List<Result>> searchCities(String query, int maxRows) async {
   var url = Uri.http('api.geonames.org', '/searchJSON', {
     'q': query,
     'maxRows': maxRows.toString(),
@@ -136,7 +130,7 @@ Future<List<SearchResult>> searchCities(String query, int maxRows) async {
 
   return (json['geonames'] as List)
       .where((geoname) => geoname['countryName'] != null)
-      .map((geoname) => SearchResult(geoname['name'], geoname['countryName']))
+      .map((geoname) => Result(geoname['name'], geoname['countryName']))
       .toSet()
       .toList();
 }
