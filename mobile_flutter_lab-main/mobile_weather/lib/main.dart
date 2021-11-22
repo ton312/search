@@ -4,16 +4,21 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'cont.dart';
+import 'SettingsModel.dart';
 import 'page_settings.dart';
 import 'forecast.dart';
 import 'favorites.dart';
 import 'about.dart';
 import 'search.dart';
 
-void main() {
+Future<void> main() async {
+  await SettingsModel.initPrefs();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    //ChangeNotifierProvider<WeatherModel>(create: (context) => WeatherModel()),
+    ChangeNotifierProvider<SettingsModel>(create: (context) => SettingsModel()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

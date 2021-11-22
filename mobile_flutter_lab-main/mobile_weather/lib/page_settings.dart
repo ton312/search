@@ -1,5 +1,6 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
+import 'settingsModel.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -33,28 +34,37 @@ class SettingsPage extends StatelessWidget {
                     title: 'Температура',
                     a: '°C',
                     b: '°F',
-                    selectedIndex: 1,
-                    onChanged: (index) {},
+                    selectedIndex: settings.units.temp ? 0 : 1,
+                    onChanged: (index) {
+                      var units = context.read<SettingsModel>().units;
+                      context.read<SettingsModel>().units = F(
+                          index == 0 ? true : false,
+                          units.speed,
+                          units.pressure);
+                    },
                   ),
                   const Divider(),
                   _Toggle(
                     title: 'Сила ветра',
                     a: 'м/c',
                     b: 'км/ч',
-                    selectedIndex:
-                    1,
+                    selectedIndex: settings.units.speed ? 0 : 1,
                     onChanged: (index) {
+                      var units = context.read<SettingsModel>().units;
+                      context.read<SettingsModel>().units = F(units.temp,
+                          index == 0 ? true : false, units.pressure);
                     },
                   ),
                   const Divider(),
                   _Toggle(
                     title: 'Давление',
-                    a: 'мм.рт.ст.',
-                    b: 'гПа',
-                    selectedIndex:
-                    1,
+                    a: 'гПа',
+                    b: 'мм.рт.ст.',
+                    selectedIndex: settings.units.pressure ? 0 : 1,
                     onChanged: (index) {
-
+                      var units = context.read<SettingsModel>().units;
+                      context.read<SettingsModel>().units =
+                          F(units.temp, units.speed, index == 0 ? true : false);
                     },
                   ),
                 ],
