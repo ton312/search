@@ -105,7 +105,7 @@ class Result {
   Result(this.city, this.country);
 
   @override
-  bool operator==(o) => o is Result && city == o.city && country == o.country;
+  bool operator == (o) => o is Result && city == o.city && country == o.country;
 
   @override
   int get hashCode => city.hashCode ^ country.hashCode;
@@ -124,9 +124,9 @@ Future<List<Result>> searchCities(String query, int maxRows) async {
   http.Response resp = await http.get(url);
   var json = jsonDecode(resp.body);
 
-  if (resp.statusCode != 200) {
-    throw Exception(json['status']['message']);
-  }
+  // if (resp.statusCode != 200) {
+  //   throw Exception(json['status']['message']);
+  // }
 
   return (json['geonames'] as List)
       .where((geoname) => geoname['countryName'] != null)

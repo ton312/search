@@ -1,6 +1,6 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
-import 'settingsModel.dart';
+import 'settings_model.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -34,25 +34,29 @@ class SettingsPage extends StatelessWidget {
                     title: 'Температура',
                     a: '°C',
                     b: '°F',
-                    selectedIndex: settings.units.temp ? 0 : 1,
+                    selectedIndex: settings.units.temp ? 1 : 0,
                     onChanged: (index) {
                       var units = context.read<SettingsModel>().units;
                       context.read<SettingsModel>().units = F(
-                          index == 0 ? true : false,
+                          index == 1 ? true : false,
                           units.speed,
                           units.pressure);
                     },
                   ),
+                  //1 выкл 0вкыл
                   const Divider(),
                   _Toggle(
                     title: 'Сила ветра',
                     a: 'м/c',
                     b: 'км/ч',
-                    selectedIndex: settings.units.speed ? 0 : 1,
+                    selectedIndex: settings.units.speed ? 1 : 0,
                     onChanged: (index) {
                       var units = context.read<SettingsModel>().units;
-                      context.read<SettingsModel>().units = F(units.temp,
-                          index == 0 ? true : false, units.pressure);
+                      context.read<SettingsModel>().units = F(
+                        units.temp,
+                        index == 1 ? true : false, 
+                        units.pressure
+                      );
                     },
                   ),
                   const Divider(),
@@ -60,11 +64,11 @@ class SettingsPage extends StatelessWidget {
                     title: 'Давление',
                     a: 'гПа',
                     b: 'мм.рт.ст.',
-                    selectedIndex: settings.units.pressure ? 0 : 1,
+                    selectedIndex: settings.units.pressure ? 1 : 0,
                     onChanged: (index) {
                       var units = context.read<SettingsModel>().units;
                       context.read<SettingsModel>().units =
-                          F(units.temp, units.speed, index == 0 ? true : false);
+                          F(units.temp, units.speed, index == 1 ? true : false);
                     },
                   ),
                 ],

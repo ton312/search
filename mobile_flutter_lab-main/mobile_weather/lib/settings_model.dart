@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'page_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class F {
   final bool temp;
   final bool speed;
   final bool pressure;
+
   F(this.temp, this.speed, this.pressure);
+
   F.fromPrefs(SharedPreferences prefs)
       : temp = prefs.getString('temp_unit') == 'C' ? true : false,
         speed = prefs.getString('speed_unit') == 'm_c' ? true : false,
@@ -34,5 +35,10 @@ class SettingsModel extends ChangeNotifier {
 
   static Future<void> initPrefs() async {
     prefs = await SharedPreferences.getInstance();
+    var user = prefs.getString("Username");
+    if (user != null && user.isNotEmpty) {
+      // ignore: avoid_print
+      print("fffffffff");
+    }
   }
 }

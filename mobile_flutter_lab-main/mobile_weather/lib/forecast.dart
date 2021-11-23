@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
-
 class WeekPage extends StatelessWidget {
   const WeekPage({Key? key}) : super(key: key);
   @override
