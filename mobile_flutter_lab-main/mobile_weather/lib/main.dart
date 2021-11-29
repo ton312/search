@@ -9,7 +9,7 @@ import 'page_settings.dart';
 import 'forecast.dart';
 import 'favorites.dart';
 import 'about.dart';
-import 'search.dart';
+import 'search_page.dart';
 
 Future<void> main() async {
   //ServicesBinding.instance!.initInstances();
@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => const SettingsPage(),
         '/about': (context) => const AboutPage(),
         '/favorite': (context) => const FavorPage(),
-        '/search': (context) => const SearchPage(),
+        '/search': (context) => CitySearchPage(),
       },
       initialRoute: '/',
     );
