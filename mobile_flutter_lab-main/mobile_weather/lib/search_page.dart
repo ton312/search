@@ -1,7 +1,8 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:untitled3/cont.dart';
 
 class CitySearchPage extends StatefulWidget {
   const CitySearchPage({Key? key}) : super(key: key);
@@ -13,39 +14,45 @@ class CitySearchPage extends StatefulWidget {
 class _DataFromAPI extends State<CitySearchPage> {
   final _searchFocus = FocusNode();
   final _searchController = TextEditingController();
-
+  Future<List<Result>> list = Future.value([]);
   void _fetchCities() {
     if (_searchController.text.isEmpty) {
       return;
     }
 
-    setState(() {
+    setState(() async {
       //cityList = cities.searchCities(_searchController.text, 20);
-      print("KOK");
+      list = await getUserData(_searchController.text);
     });
   }
 
-  getUserData(String query, int maxRows) async {
-    var resp = await http.get(Uri.http('api.geonames.org', '/searchJSON', {
-      'q': query,
-      'maxRows': maxRows.toString(),
-      'lang': 'ru',
-      'fuzzy': '1',
-      'username': dotenv.env['GEONAMES_KEY'],
-    }));
-    var json = jsonDecode(resp.body);
-    if (resp.statusCode != 200) {
-      throw Exception(json['status']['message']);
-    }
-    List<Result> results = [];
-    for (var u in json) {
-      if (u['countryName'] != null) {
-        Result res = Result('name', u["countryName"]);
-        results.add(res);
-      }
-    }
-    print(results.length);
-    return results;
+  Future getUserData(String query) async {
+    //var resp = await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=$Result.cityName&appid=1369dd6b5ae78fc9952261ab9aa236b4&units=metric")); для
+    var resp = await http.get(Uri.parse(
+        "http://api.geonames.org/searchJSON?q=$query&maxRows=10&username=ton123"));
+    var body = jsonDecode(resp.body);
+    //List<Result> results = [];
+
+    // for (var u in body) {
+    //   //боди это мапа вот и жалуется
+    //   if (u['countryName'] != null) {
+    //     Result res = Result('name', u["countryName"]);
+    //     results.add(res);
+    //   }
+    // }
+
+    print((body['geonames'] as List)
+        .where((geoname) => geoname['countryName'] != null)
+        .map((geoname) => Result(geoname['name'], geoname['countryName']))
+        .toSet()
+        .toList());
+
+    return (body['geonames'] as List)
+        .where((geoname) => geoname['countryName'] != null)
+        .map((geoname) => Result(geoname['name'], geoname['countryName']))
+        .toSet()
+        .toList();
+    //return ResultWeather.fromJson(body);
   }
 
   @override
@@ -68,20 +75,58 @@ class _DataFromAPI extends State<CitySearchPage> {
           ),
         ],
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: Text("klick"),
-          onPressed: () {
-            getUserData(_searchController.text, 10);
-          },
-        ),
+      body: FutureBuilder<List<Result>>(
+        future: list,
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return const Center(
+              child: Text("loading..."),
+            );
+          } else {
+            return ListView.separated(
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var item = snapshot.data![index];
+                return GestureDetector(
+                  child: ListTile(
+                      title: Text('${item.city} - ${item.country}'),
+                      trailing: Icon(Icons
+                          .star_border) //Icon(isFavorite ? Icons.star : Icons.star_border),
+                      ),
+                  onTap: () {
+                    // var weather = context.read<WeatherModel>();
+                    // weather.currentCity = item.city;
+                    // weather.addFavoriteCity(item.city);
+                    // Navigator.pop(context);
+                  },
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }
 }
 
+class ResultWeather {
+  Result? city;
+  double? temp;
+  double? speed;
+  int? pressure;
+
+  ResultWeather.fromJson(Map<String, dynamic> json, Result) {
+    city = Result;
+    temp = json["main"]["temp"];
+    speed = json["wind"]["speed"];
+    pressure = json["main"]["pressure"];
+  }
+}
+
 class Result {
   String city, country;
+
   Result(this.city, this.country);
 }
 
