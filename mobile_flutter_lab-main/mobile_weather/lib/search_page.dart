@@ -2,8 +2,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:untitled3/cont.dart';
-
+List<Result> favourites = [];
 class CitySearchPage extends StatefulWidget {
   const CitySearchPage({Key? key}) : super(key: key);
 
@@ -14,7 +13,8 @@ class CitySearchPage extends StatefulWidget {
 class _DataFromAPI extends State<CitySearchPage> {
   final _searchFocus = FocusNode();
   final _searchController = TextEditingController();
-  Future<List<Result>> list = Future.value([]);
+  List<Result> list = [];
+
   void _fetchCities() {
     if (_searchController.text.isEmpty) {
       return;
@@ -41,18 +41,20 @@ class _DataFromAPI extends State<CitySearchPage> {
     //   }
     // }
 
-    print((body['geonames'] as List)
-        .where((geoname) => geoname['countryName'] != null)
-        .map((geoname) => Result(geoname['name'], geoname['countryName']))
-        .toSet()
-        .toList());
-
     return (body['geonames'] as List)
         .where((geoname) => geoname['countryName'] != null)
         .map((geoname) => Result(geoname['name'], geoname['countryName']))
         .toSet()
         .toList();
     //return ResultWeather.fromJson(body);
+  }
+
+  chek(Result res){
+    for (var element in favourites) {
+      if (element.getIsFav() && res.city == element.city && res.country == element.country) {
+        return true;
+      }
+    }
   }
 
   @override
@@ -62,7 +64,6 @@ class _DataFromAPI extends State<CitySearchPage> {
         title: TextField(
           focusNode: _searchFocus,
           controller: _searchController,
-          onEditingComplete: _fetchCities,
           style: const TextStyle(fontSize: 20),
           decoration: const InputDecoration(
             hintText: 'Введите город',
@@ -75,146 +76,51 @@ class _DataFromAPI extends State<CitySearchPage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Result>>(
-        future: list,
-        builder: (context, snapshot) {
-          if (snapshot.data == null) {
-            return const Center(
-              child: Text("loading..."),
-            );
-          } else {
-            return ListView.separated(
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var item = snapshot.data![index];
-                return GestureDetector(
-                  child: ListTile(
-                      title: Text('${item.city} - ${item.country}'),
-                      trailing: Icon(Icons
-                          .star_border) //Icon(isFavorite ? Icons.star : Icons.star_border),
-                      ),
-                  onTap: () {
-                    // var weather = context.read<WeatherModel>();
-                    // weather.currentCity = item.city;
-                    // weather.addFavoriteCity(item.city);
-                    // Navigator.pop(context);
-                  },
-                );
-              },
-            );
-          }
+      body: ListView.separated(
+        separatorBuilder: (context, index) => const Divider(),
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            child: ListTile(
+                title: Text('${list[index].city} - ${list[index].country}'),
+                trailing: Icon(chek(list[index]) ? Icons.star : Icons.star_border),//Icon(isFavorite ? Icons.star : Icons.star_border),
+            ),
+            onTap: () {
+              // var weather = context.read<WeatherModel>();
+              // weather.currentCity = item.city;
+              // weather.addFavoriteCity(item.city);
+              if (list[index].isFavorite) {
+                favourites.removeWhere((e) => e.city == list[index]);
+              } else {
+                favourites.add(list[index]);
+              }
+              //list[index].setIsFavor(true);
+              list[index].isFavorite = !list[index].isFavorite;
+              //Navigator.pop(context);
+            },
+          );
         },
       ),
     );
   }
 }
 
-class ResultWeather {
-  Result? city;
+class Result {
+  String? city, country;
   double? temp;
   double? speed;
   int? pressure;
-
-  ResultWeather.fromJson(Map<String, dynamic> json, Result) {
-    city = Result;
+  bool isFavorite = false;
+  Result(this.city, this.country);
+  Result.fromJson(Map<String, dynamic> json) {
     temp = json["main"]["temp"];
     speed = json["wind"]["speed"];
     pressure = json["main"]["pressure"];
   }
+  getIsFav(){
+    if(isFavorite != null) return isFavorite;
+  }
+  getCity(){
+    if(city != null) return city;
+  }
 }
-
-class Result {
-  String city, country;
-
-  Result(this.city, this.country);
-}
-
-
-// class _CitySearchPageState extends State<CitySearchPage> {
-//   final _searchFocus = FocusNode();
-//   final _searchController = TextEditingController();
-
-//   Future<List<cities.SearchResult>> cityList = Future.value([]);
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _searchFocus.requestFocus();
-//   }
-
-//   @override
-//   void dispose() {
-//     _searchController.dispose();
-//     super.dispose();
-//   }
-
-//   void _fetchCities() {
-//     if (_searchController.text.isEmpty) {
-//       return;
-//     }
-
-//     setState(() {
-//       cityList = cities.searchCities(_searchController.text, 20);
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: NeumorphicAppBar(
-//         title: TextField(
-//           focusNode: _searchFocus,
-//           controller: _searchController,
-//           onEditingComplete: _fetchCities,
-//           style: const TextStyle(fontSize: 20),
-//           decoration: const InputDecoration(
-//             hintText: 'Введите город',
-//           ),
-//         ),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.search),
-//             onPressed: _fetchCities,
-//           ),
-//         ],
-//       ),
-//       body: FutureBuilder<List<cities.SearchResult>>(
-//         future: cityList,
-//         builder: (context, snapshot) {
-//           if (snapshot.hasError) {
-//             dev.log('Error: ${snapshot.error}');
-//             return const Center(child: Text('Не удалось получить результаты'));
-//           }
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-//           return ListView.separated(
-//             separatorBuilder: (context, index) => const Divider(),
-//             itemCount: snapshot.data!.length,
-//             itemBuilder: (context, index) {
-//               var item = snapshot.data![index];
-//               var isFavorite = context
-//                   .read<WeatherModel>()
-//                   .favoriteCities
-//                   .contains(item.city);
-
-//               return GestureDetector(
-//                 child: ListTile(
-//                   title: Text('${item.city} - ${item.country}'),
-//                   trailing: Icon(isFavorite ? Icons.star : Icons.star_border),
-//                 ),
-//                 onTap: () {
-//                   var weather = context.read<WeatherModel>();
-//                   weather.currentCity = item.city;
-//                   weather.addFavoriteCity(item.city);
-//                   Navigator.pop(context);
-//                 },
-//               );
-//             },
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
