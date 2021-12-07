@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'weather.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'cont.dart';
@@ -10,6 +11,9 @@ import 'forecast.dart';
 import 'favorites.dart';
 import 'about.dart';
 import 'search_page.dart';
+
+Result th = Result("Moskow", "Russia");
+WeatherForecast favor = fetchWeatherForecast("Moskow") as WeatherForecast;
 
 Future<void> main() async {
   //ServicesBinding.instance!.initInstances();
@@ -87,8 +91,9 @@ class MyApp extends StatelessWidget {
         '/': (context) => const MyHomePage(),
         '/settings': (context) => const SettingsPage(),
         '/about': (context) => const AboutPage(),
-        '/favorite': (context) => const FavorPage(),
+        '/favorite': (context) => FavorPage(),
         '/search': (context) => CitySearchPage(),
+        //WeeklyForecastPage,
       },
       initialRoute: '/',
     );
@@ -192,18 +197,24 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             Container(
-                margin: const EdgeInsets.all(10),
-                child: Column(children: [
-                  Builder(
-                      builder: (context) => MainButton(
-                            child: const Icon(Icons.menu, color: Colors.white),
-                            onPressed: () => Scaffold.of(context).openDrawer(),
-                          )),
-                  MainButton(
-                    child: const Icon(Icons.add, color: Colors.white),
-                    onPressed: () => Navigator.pushNamed(context, "/search"),
-                  ),
-                ])),
+                margin: const EdgeInsets.only(top: 30, left: 10, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Builder(
+                        builder: (context) =>
+                            MainButton(
+                              child: const Icon(Icons.menu, color: Colors.white),
+                              onPressed: () => Scaffold.of(context).openDrawer(),
+                            )
+                      ),
+                      MainButton(
+                        child: const Icon(Icons.add, color: Colors.white),
+                        onPressed: () => Navigator.pushNamed(context, "/search"),
+                      ),
+                    ]
+                  )
+            ),
             SlidingUpPanel(
               minHeight: 230,
               maxHeight: 350,
@@ -237,9 +248,7 @@ class MyHomePage extends StatelessWidget {
                             ]),
                       ),
                       OutlinedButton(
-                        onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => const WeekPage())),
+                        onPressed: () => Navigator.pushNamed(context, "/search"),
                         child: const Text('Прогноз на неделю'),
                       ),
                     ],

@@ -1,8 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:untitled3/weather.dart';
 import 'search_page.dart';
-class FavorPage extends StatelessWidget {
-  const FavorPage({Key? key}) : super(key: key);
+import 'main.dart';
+
+class FavorPage extends StatefulWidget {
+
+  @override
+  State<FavorPage> createState() => _FavorPageState();
+}
+
+class _FavorPageState extends State<FavorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,21 +36,32 @@ class FavorPage extends StatelessWidget {
                   depth: -5,
                 ),
                 child: ListTile(
-                  title: Text(favourites[index].getCity()),
+                  title: Text(favourites[index].city),
                   trailing: NeumorphicButton(
                     style: NeumorphicStyle(
                       color: NeumorphicTheme.accentColor(context).withOpacity(0.2),
                     ),
                     child: const Icon(Icons.close),
-                    onPressed: () {
-                      //context.read<WeatherModel>().removeFavoriteCity(favorites[index]);
+                    onPressed: () async {
+                      // ignore: unrelated_type_equality_checks
+                      if(favor == favourites[index]) {
+                        Result th = Result("Moskow", "Russia");
+                        var l = await fetchWeatherForecast("Moskow");
+                        WeatherForecast favor = l;
+                      }
+                      setState(()  {
+                        favourites.removeWhere((element) => element == favourites[index]);
+                      });
                     },
                   ),
                 ),
               ),
-              onTap: () {
-                //context.read<WeatherModel>().currentCity = favorites[index];
-                Navigator.pop(context);
+              onTap: () async {
+                var l = await fetchWeatherForecast(favourites[index].city);
+                setState(()  {
+                  th = favourites[index];
+                  favor =  l;
+                });
               },
             ),
           );
