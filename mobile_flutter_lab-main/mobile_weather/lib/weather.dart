@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
- var fol = dotenv.env['OPENWEATHERMAP_KEY'];
 class Weather {
   //String name;
   final DateTime date;
@@ -56,23 +56,22 @@ class Weather {
  }
 
  Future<_GeoPos> _directGeocode(String city) async {
-   print(fol);
    var url = Uri.https('api.openweathermap.org', '/geo/1.0/direct', {
-   'appid': fol,
+   'appid': "f6ed45e8ff9e08469de6c1a1ad8d194c",
    'limit': '1',
    'q': city,
   });
 
   http.Response resp = await http.get(url);
   var json = jsonDecode(resp.body)[0];
-
+  log(json.toString(), name: '_directGeocode');
   return _GeoPos(json['lat'].toDouble(), json['lon'].toDouble());
  }
 
  Future<WeatherForecast> fetchWeatherForecast(String city) async {
   var pos = await _directGeocode(city);
   var url = Uri.https('api.openweathermap.org', '/data/2.5/onecall', {
-   'appid': fol,//код не тот
+   'appid': "f6ed45e8ff9e08469de6c1a1ad8d194c",
    'lat': pos.lat.toString(),
    'lon': pos.lon.toString(),
    'lang': 'ru',

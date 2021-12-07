@@ -38,23 +38,21 @@ class SettingsModel extends ChangeNotifier {
     prefs = await SharedPreferences.getInstance();
     var user = prefs.getString("Username");
     if (user != null && user.isNotEmpty) {
-      // ignore: avoid_print
-      print("fffffffff");
     }
   }
   String formatTemp(double temperatureC) {
     if (_units.temp) {
-      return '${temperatureC.round()}˚C';
-    } else {
       return '${(temperatureC * 9 / 5 + 32).round()}˚F';
+    } else {
+      return '${temperatureC.round()}˚C';
     }
   }
 
   String formatSpeed(double speedMs) {
     if (_units.speed) {
-      return '$speedMs м/с';
+      return '${(speedMs * 3.6).round()} к/ч';
     } else {
-      return '${(speedMs * 3.6).round()} м/с';
+      return '$speedMs м/с';
     }
   }
 

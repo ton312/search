@@ -62,8 +62,8 @@ class SettingsPage extends StatelessWidget {
                   const Divider(),
                   _Toggle(
                     title: 'Давление',
-                    a: 'гПа',
-                    b: 'мм.рт.ст.',
+                    a: 'мм.рт.ст.',
+                    b: 'гПа',
                     selectedIndex: settings.units.pressure ? 1 : 0,
                     onChanged: (index) {
                       var units = context.read<SettingsModel>().units;

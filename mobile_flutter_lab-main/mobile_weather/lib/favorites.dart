@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:untitled3/weather.dart';
@@ -45,8 +47,8 @@ class _FavorPageState extends State<FavorPage> {
                     onPressed: () async {
                       // ignore: unrelated_type_equality_checks
                       if(favor == favourites[index]) {
-                        Result th = Result("Moskow", "Russia");
-                        var l = await fetchWeatherForecast("Moskow");
+                        Result th = Result("Moscow", "Russia");
+                        var l = await fetchWeatherForecast("Moscow");
                         WeatherForecast favor = l;
                       }
                       setState(()  {
@@ -58,6 +60,7 @@ class _FavorPageState extends State<FavorPage> {
               ),
               onTap: () async {
                 var l = await fetchWeatherForecast(favourites[index].city);
+                //log(l.toString(), name: "SPB");
                 setState(()  {
                   th = favourites[index];
                   favor =  l;
